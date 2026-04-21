@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>בית חב״ד — ניהול סעודת שבת</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@300;400;500;600&family=Rubik:wght@300;400;500;700&family=Assistant:wght@300;400;600;700&family=Varela+Round&family=Secular+One&family=David+Libre:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:      #C9952A;
+    --gold-lt:   #E8B84B;
+    --gold-dk:   #8B6518;
+    --ink:       #1A1208;
+    --cream:     #FAF5E9;
+    --cream-dk:  #F0E8D0;
+    --red:       #8B1A1A;
+    --green:     #1A5C2A;
+    --blue:      #1A2E5C;
+    --card:      #FFFDF5;
+    --border:    rgba(201,149,42,0.25);
+    --shadow:    0 4px 24px rgba(26,18,8,0.12);
+    --shadow-lg: 0 8px 40px rgba(26,18,8,0.18);
+    --radius:    12px;
+    --font-h:    'Frank Ruhl Libre', serif;
+    --font-b:    'Heebo', sans-serif;
+    --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  html { font-size: 15px; }
+  body {
+    font-family: var(--font-b);
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--ink);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header-title {
+    font-family: var(--font-h);
+    color: var(--gold-lt);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .header-title span { color: #aaa; font-weight: 300; font-size: 0.85rem; margin-right: 8px; }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .people-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,149,42,0.15);
+    border: 1px solid var(--gold-dk);
+    border-radius: 8px;
+    padding: 6px 14px;
+  }
+  .people-control label { color: var(--gold-lt); font-size: 0.85rem; white-space: nowrap; }
+  .people-control input {
+    width: 52px;
+    background: transparent;
+    border: none;
+    color: var(--gold-lt);
+    font-family: var(--font-h);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+  }
+  .people-control input::-webkit-inner-spin-button { opacity: 0; }
+  .btn-people {
+    background: none; border: none; color: var(--gold-lt);
+    cursor: pointer; font-size: 1rem; padding: 0 2px;
+    transition: color var(--transition);
+  }
+  .btn-people:hover { color: #fff; }
+
+  /* ===== NAV TABS ===== */
+  nav {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    padding: 0 24px;
+    gap: 4px;
+  }
+  .tab-btn {
+    background: none; border: none;
+    color: #888;
+    font-family: var(--font-b);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 10px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--gold-lt); }
+  .tab-btn.active {
+    color: var(--gold-lt);
+    border-bottom-color: var(--gold);
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  main { padding: 20px 16px; max-width: 1800px; margin: 0 auto; }
+  .page { display: none; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  /* 3-col layout */
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 1100px) { .three-col { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px) { .three-col { grid-template-columns: 1fr; } }
+
+  /* ===== CARDS ===== */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .panel-header {
+    background: var(--ink);
+    padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-header h2 {
+    font-family: var(--font-h);
+    color: var(--gold-lt);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .panel-header .badge {
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .panel-body { padding: 14px; }
+
+  /* ===== SECTION (collapsible) ===== */
+  .section-group { margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .section-header {
+    background: var(--cream-dk);
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--transition);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .section-header:hover { background: #e8dfc5; }
+  .section-header .arrow {
+    transition: transform var(--transition);
+    font-size: 0.75rem;
+    color: var(--gold-dk);
+  }
+  .section-header.open .arrow { transform: rotate(180deg); }
+  .section-body { display: none; padding: 10px; background: var(--card); }
+  .section-body.open { display: block; }
+
+  /* ===== RECIPE ITEMS ===== */
+  .recipe-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: box-shadow var(--transition);
+  }
+  .recipe-item:hover { box-shadow: 0 2px 12px rgba(201,149,42,0.15); }
+  .recipe-item-header {
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    background: var(--cream);
+    user-select: none;
+  }
+  .recipe-item-header:hover { background: var(--cream-dk); }
+  .recipe-check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--gold);
+    border-radius: 5px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    transition: all var(--transition);
+    cursor: pointer;
+  }
+  .recipe-check.checked {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #fff;
+    font-size: 12px;
+  }
+  .recipe-name { flex: 1; font-weight: 600; font-size: 0.92rem; }
+  .recipe-expand-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--gold-dk); font-size: 0.75rem;
+    padding: 2px 6px;
+    transition: transform var(--transition);
+  }
+  .recipe-expand-btn.open { transform: rotate(180deg); }
+  .recipe-details {
+    display: none;
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    background: #fffdf0;
+  }
+  .recipe-details.open { display: block; }
+  .recipe-details h4 { font-size: 0.8rem; color: var(--gold-dk); margin-bottom: 6px; font-weight: 600; }
+  .ingredients-list { list-style: none; margin-bottom: 10px; }
+  .ingredients-list li {
+    display: flex; justify-content: space-between;
+    font-size: 0.82rem;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(201,149,42,0.1);
+  }
+  .ingredients-list li:last-child { border: none; }
+  .ing-qty { color: var(--gold-dk); font-weight: 600; }
+  .recipe-instructions { font-size: 0.8rem; color: #555; line-height: 1.6; }
+
+  /* ===== INVENTORY ITEMS ===== */
+  .inv-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 6px;
+    border-bottom: 1px solid rgba(201,149,42,0.08);
+    font-size: 0.85rem;
+    transition: background var(--transition);
+  }
+  .inv-item:last-child { border-bottom: none; }
+  .inv-item:hover { background: var(--cream); }
+  .inv-name { font-weight: 500; }
+  .inv-unit { color: #888; font-size: 0.75rem; }
+  .inv-qty-input {
+    width: 54px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-family: var(--font-b);
+    font-size: 0.85rem;
+    text-align: center;
+    background: #fff;
+    transition: border-color var(--transition);
+    outline: none;
+  }
+  .inv-qty-input:focus { border-color: var(--gold); }
+  .inv-qty-input.low { border-color: var(--red); background: #fff5f5; color: var(--red); }
+  .inv-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .inv-status.ok { background: var(--green); }
+  .inv-status.low { background: #f0a500; }
+  .inv-status.empty { background: var(--red); }
+
+  /* ===== SHOPPING LIST ===== */
+  .shop-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 7px;
+    margin-bottom: 5px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    font-size: 0.87rem;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateX(8px); } to { opacity:1; transform:translateX(0); } }
+  .shop-item-name { font-weight: 600; }
+  .shop-item-qty { color: var(--red); font-weight: 700; font-size: 0.92rem; }
+  .shop-item-unit { color: #888; font-size: 0.78rem; }
+  .shop-empty {
+    text-align: center; padding: 32px 16px;
+    color: var(--green);
+    font-size: 0.95rem;
+  }
+  .shop-empty .icon { font-size: 2rem; margin-bottom: 8px; }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: none; cursor: pointer;
+    font-family: var(--font-b);
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all var(--transition);
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .btn-gold:hover { background: var(--gold-lt); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold-dk); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-danger:hover { background: #a52020; }
+  .btn-sm { padding: 4px 10px; font-size: 0.75rem; }
+
+  /* ===== FORM CONTROLS ===== */
+  .form-group { margin-bottom: 10px; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: var(--gold-dk); }
+  .form-control {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-family: var(--font-b);
+    font-size: 0.87rem;
+    background: #fff;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .form-control:focus { border-color: var(--gold); }
+  select.form-control { cursor: pointer; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,18,8,0.65);
+    z-index: 200;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%; max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+  .modal-header {
+    background: var(--ink);
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-radius: var(--radius) var(--radius) 0 0;
+    position: sticky; top: 0;
+  }
+  .modal-header h3 { font-family: var(--font-h); color: var(--gold-lt); font-size: 1.1rem; }
+  .modal-close { background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.3rem; }
+  .modal-close:hover { color: #fff; }
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 14px 20px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--border); }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .stat-card .num {
+    font-family: var(--font-h);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-card .lbl { font-size: 0.75rem; color: #777; margin-top: 3px; }
+
+  /* ===== SEARCH ===== */
+  .search-box {
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 8px 14px 8px 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: var(--font-b);
+    font-size: 0.87rem;
+    background: #fff;
+    outline: none;
+    transition: border-color var(--transition);
+    direction: rtl;
+  }
+  .search-box input:focus { border-color: var(--gold); }
+  .search-box::before {
+    content: '🔍';
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+
+  /* ===== TAG ===== */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .tag-green { background: #e6f4ea; color: var(--green); }
+  .tag-red   { background: #fbe9e9; color: var(--red); }
+  .tag-gold  { background: #fdf3d0; color: var(--gold-dk); }
+
+  /* ===== DIVIDER ===== */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+  /* ===== TOAST ===== */
+  .toast-container { position: fixed; bottom: 24px; left: 24px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: var(--ink);
+    color: var(--gold-lt);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    border-right: 3px solid var(--gold);
+    box-shadow: var(--shadow-lg);
+    animation: toastIn 0.3s ease;
+  }
+  @keyframes toastIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ingredients editor */
+  .ing-row { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .ing-row input { font-size: 0.82rem; }
+  .ing-row .btn { padding: 5px 9px; }
+
+  .flex { display: flex; align-items: center; }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; }
+  .gap-8 { gap: 8px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .text-sm { font-size: 0.82rem; }
+  .text-muted { color: #888; }
+  .fw-600 { font-weight: 600; }
+  .full-width { width: 100%; }
+  .panel-scroll { max-height: calc(100vh - 200px); overflow-y: auto; padding: 14px; }
+
+  .inv-name-input {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 2px 4px;
+    font-family: var(--font-b);
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: transparent;
+    outline: none;
+    min-width: 0;
+    flex: 1;
+    transition: border-color var(--transition), background var(--transition);
+    cursor: text;
+  }
+  .inv-name-input:hover { border-color: var(--border); background: #fff; }
+  .inv-name-input:focus { border-color: var(--gold); background: #fff; }
+
+  .inv-unit-select {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 4px;
+    font-family: var(--font-b);
+    font-size: 0.75rem;
+    background: #fff;
+    color: #666;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition);
+    max-width: 80px;
+  }
+  .inv-unit-select:focus { border-color: var(--gold); color: var(--ink); }
+
+  .inv-min-input {
+    width: 48px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 4px;
+    font-family: var(--font-b);
+    font-size: 0.8rem;
+    text-align: center;
+    background: #fff;
+    outline: none;
+    transition: border-color var(--transition);
+    color: #888;
+  }
+  .inv-min-input:focus { border-color: var(--gold); color: var(--ink); }
+
+  /* ===== DESIGN SETTINGS PAGE ===== */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 4px;
+  }
+  .settings-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .settings-card-header {
+    background: var(--ink);
+    padding: 12px 16px;
+    font-family: var(--font-h);
+    color: var(--gold-lt);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .settings-card-body { padding: 16px; }
+
+  /* Color swatches */
+  .theme-swatches {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
+  }
+  .swatch {
+    width: 36px; height: 36px; border-radius: 8px;
+    cursor: pointer; border: 3px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .swatch:hover { transform: scale(1.12); }
+  .swatch.active { border-color: #fff; box-shadow: 0 0 0 2px var(--gold); }
+
+  /* Sliders */
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; gap: 12px;
+  }
+  .settings-row label { font-size: 0.85rem; font-weight: 600; color: var(--gold-dk); white-space: nowrap; }
+  .settings-row .val { font-size: 0.8rem; color: #888; min-width: 36px; text-align: left; }
+  input[type=range] {
+    flex: 1; accent-color: var(--gold);
+    cursor: pointer; height: 4px;
+  }
+
+  /* Font cards */
+  .font-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .font-card {
+    padding: 8px 14px; border-radius: 8px;
+    border: 2px solid var(--border);
+    cursor: pointer; font-size: 1rem;
+    transition: all 0.2s; background: var(--cream);
+  }
+  .font-card:hover { border-color: var(--gold); }
+  .font-card.active { border-color: var(--gold); background: var(--gold); color: var(--ink); }
+
+  /* Animation toggles */
+  .anim-options { display: flex; gap: 8px; flex-wrap: wrap; }
+  .anim-btn {
+    padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    border: 2px solid var(--border); cursor: pointer; background: var(--cream);
+    transition: all 0.2s;
+  }
+  .anim-btn.active { border-color: var(--gold); background: var(--gold); color: var(--ink); }
+
+  /* Column layout buttons */
+  .col-options { display: flex; gap: 8px; }
+  .col-btn {
+    flex: 1; padding: 10px 6px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    border: 2px solid var(--border); cursor: pointer; background: var(--cream);
+    transition: all 0.2s; text-align: center;
+  }
+  .col-btn:hover { border-color: var(--gold); }
+  .col-btn.active { border-color: var(--gold); background: var(--gold); color: var(--ink); }
+
+  /* Live preview strip */
+  .preview-strip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .preview-strip .pre-title {
+    font-family: var(--font-h); font-size: 1.1rem; font-weight: 700; color: var(--gold);
+  }
+  .preview-strip .pre-body { font-family: var(--font-b); font-size: 0.9rem; color: var(--ink); }
+  .preview-strip .pre-btn {
+    background: var(--gold); color: var(--ink); border: none;
+    padding: 7px 16px; border-radius: 7px; font-weight: 700; font-size: 0.85rem;
+    font-family: var(--font-b); cursor: default;
+    transition: background var(--transition);
+  }
+  .preview-strip .pre-badge {
+    background: var(--ink); color: var(--gold-lt);
+    padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+  }
+
+  /* Reset btn */
+  .btn-reset {
+    background: transparent; border: 1px solid var(--border);
+    color: #888; font-size: 0.8rem; padding: 6px 14px;
+    border-radius: 7px; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-reset:hover { border-color: var(--red); color: var(--red); }
+
+  .settings-section-title {
+    font-size: 0.72rem; font-weight: 700; color: var(--gold-dk);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  /* ===== END DESIGN SETTINGS ===== */
+
+  .shop-category-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gold-dk);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 12px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="header-logo">🕍</div>
+    <div class="header-title">בית חב״ד <span>| ניהול סעודת שבת</span></div>
+  </div>
+  <div class="header-controls">
+    <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:#888;">
+      <span id="syncDot" style="width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;transition:background 0.3s;" title="מחובר"></span>
+      <span id="syncLabel" style="color:#888;">Firebase</span>
+    </div>
+    <div class="people-control">
+      <label>אורחים:</label>
+      <button class="btn-people" onclick="changePeople(-5)">−</button>
+      <input type="number" id="peopleCount" value="50" min="1" max="500" oninput="onPeopleChange()" />
+      <button class="btn-people" onclick="changePeople(5)">+</button>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" onclick="showPage('dashboard')">📊 לוח בקרה</button>
+  <button class="tab-btn" onclick="showPage('recipes')">🍽️ מתכונים</button>
+  <button class="tab-btn" onclick="showPage('inventory')">📦 מלאי</button>
+  <button class="tab-btn" onclick="showPage('shopping')">🛒 קניות</button>
+  <button class="tab-btn" onclick="showPage('design')">🎨 עיצוב</button>
+</nav>
+
+<main>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="page-dashboard" class="page active">
+  <div class="stats-bar" id="statsBar"></div>
+  <div class="three-col">
+    <!-- RECIPES PANEL -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>🍽️ מתכונים לשבת</h2>
+        <span class="badge" id="selectedCount">0 נבחרו</span>
+      </div>
+      <div class="panel-scroll" id="recipesPanel"></div>
+    </div>
+    <!-- INVENTORY PANEL -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>📦 מלאי</h2>
+        <span class="badge" id="lowStockBadge">0 חסרים</span>
+      </div>
+      <div class="panel-scroll" id="inventoryPanel"></div>
+    </div>
+    <!-- SHOPPING PANEL -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>🛒 רשימת קניות</h2>
+        <span class="badge" id="shopBadge">0 פריטים</span>
+      </div>
+      <div class="panel-scroll" id="shoppingPanel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RECIPES PAGE ===== -->
+<div id="page-recipes" class="page">
+  <div class="flex-between" style="margin-bottom:14px;">
+    <h2 style="font-family:var(--font-h);font-size:1.3rem;">📖 ספר המתכונים</h2>
+    <button class="btn btn-gold" onclick="openAddRecipeModal()">+ הוסף מתכון</button>
+  </div>
+  <div class="search-box"><input type="text" placeholder="חיפוש מתכון..." oninput="filterRecipes(this.value)" /></div>
+  <div id="fullRecipesPanel"></div>
+</div>
+
+<!-- ===== INVENTORY PAGE ===== -->
+<div id="page-inventory" class="page">
+  <div class="flex-between" style="margin-bottom:14px;">
+    <h2 style="font-family:var(--font-h);font-size:1.3rem;">📦 ניהול מלאי</h2>
+    <button class="btn btn-gold" onclick="openAddItemModal()">+ הוסף מוצר</button>
+  </div>
+  <div class="search-box"><input type="text" placeholder="חיפוש מוצר..." oninput="filterInventory(this.value)" /></div>
+  <div id="fullInventoryPanel"></div>
+</div>
+
+<!-- ===== SHOPPING PAGE ===== -->
+<div id="page-shopping" class="page">
+  <div class="flex-between" style="margin-bottom:14px;">
+    <h2 style="font-family:var(--font-h);font-size:1.3rem;">🛒 רשימת קניות מפורטת</h2>
+    <button class="btn btn-outline" onclick="printShopping()">🖨️ הדפס</button>
+  </div>
+  <div id="fullShoppingPanel"></div>
+</div>
+
+<!-- ===== DESIGN SETTINGS PAGE ===== -->
+<div id="page-design" class="page">
+  <div class="flex-between" style="margin-bottom:14px;">
+    <h2 style="font-family:var(--font-h);font-size:1.3rem;">🎨 הגדרות עיצוב</h2>
+    <button class="btn-reset" onclick="resetDesign()">↺ איפוס לברירת מחדל</button>
+  </div>
+
+  <!-- Live Preview -->
+  <div class="preview-strip" id="previewStrip">
+    <div>
+      <div class="pre-title">בית חב״ד</div>
+      <div class="pre-body">ניהול סעודת שבת</div>
+    </div>
+    <button class="pre-btn">שמור שינויים</button>
+    <span class="pre-badge">50 אורחים</span>
+    <span style="font-size:0.78rem;color:#aaa;margin-right:auto;">תצוגה מקדימה חיה</span>
+  </div>
+
+  <div class="settings-grid">
+
+    <!-- THEMES -->
+    <div class="settings-card">
+      <div class="settings-card-header">🎨 ערכות צבעים מוכנות</div>
+      <div class="settings-card-body">
+        <div class="settings-section-title">בחר ערכה</div>
+        <div class="theme-swatches" id="themeSwatches"></div>
+        <div id="themeNameLabel" style="font-size:0.8rem;color:#888;margin-top:4px;"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOM COLORS -->
+    <div class="settings-card">
+      <div class="settings-card-header">🖌️ צבעים מותאמים אישית</div>
+      <div class="settings-card-body">
+        <div class="settings-row">
+          <label>צבע ראשי</label>
+          <input type="color" id="clrAccent" oninput="applyCustomColor('accent',this.value)" style="width:40px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;" />
+          <span class="val" id="clrAccentVal"></span>
+        </div>
+        <div class="settings-row">
+          <label>רקע</label>
+          <input type="color" id="clrBg" oninput="applyCustomColor('bg',this.value)" style="width:40px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;" />
+          <span class="val" id="clrBgVal"></span>
+        </div>
+        <div class="settings-row">
+          <label>כותרת/ניווט</label>
+          <input type="color" id="clrHeader" oninput="applyCustomColor('header',this.value)" style="width:40px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;" />
+          <span class="val" id="clrHeaderVal"></span>
+        </div>
+        <div class="settings-row">
+          <label>טקסט</label>
+          <input type="color" id="clrText" oninput="applyCustomColor('text',this.value)" style="width:40px;height:32px;border:none;border-radius:6px;cursor:pointer;background:none;" />
+          <span class="val" id="clrTextVal"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="settings-card">
+      <div class="settings-card-header">✍️ טיפוגרפיה</div>
+      <div class="settings-card-body">
+        <div class="settings-section-title">פונט כותרות</div>
+        <div class="font-options" id="fontHeadOptions"></div>
+        <div class="settings-section-title" style="margin-top:14px;">פונט טקסט</div>
+        <div class="font-options" id="fontBodyOptions"></div>
+        <div class="settings-section-title" style="margin-top:14px;">גודל טקסט</div>
+        <div class="settings-row">
+          <label>בסיס</label>
+          <input type="range" id="fontSize" min="12" max="20" value="15" oninput="applyFontSize(this.value)" />
+          <span class="val" id="fontSizeVal">15px</span>
+        </div>
+        <div class="settings-section-title" style="margin-top:4px;">רדיוס פינות</div>
+        <div class="settings-row">
+          <label>עיגול</label>
+          <input type="range" id="borderRadius" min="0" max="24" value="12" oninput="applyRadius(this.value)" />
+          <span class="val" id="radiusVal">12px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANIMATIONS -->
+    <div class="settings-card">
+      <div class="settings-card-header">⚡ הנפשות ומעברים</div>
+      <div class="settings-card-body">
+        <div class="settings-section-title">מהירות מעברים</div>
+        <div class="settings-row">
+          <label>מהירות</label>
+          <input type="range" id="transSpeed" min="0" max="600" value="250" step="50" oninput="applyTransition(this.value)" />
+          <span class="val" id="transVal">250ms</span>
+        </div>
+        <div class="settings-section-title" style="margin-top:4px;">סוג הנפשה</div>
+        <div class="anim-options" id="animOptions"></div>
+        <div class="settings-section-title" style="margin-top:14px;">אפקט כניסת עמוד</div>
+        <div class="anim-options" id="pageAnimOptions"></div>
+      </div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="settings-card">
+      <div class="settings-card-header">📐 פריסת עמודות (לוח בקרה)</div>
+      <div class="settings-card-body">
+        <div class="settings-section-title">מספר עמודות</div>
+        <div class="col-options" id="colOptions"></div>
+        <div class="settings-section-title" style="margin-top:14px;">רווח בין אלמנטים</div>
+        <div class="settings-row">
+          <label>רווח</label>
+          <input type="range" id="gapSize" min="4" max="32" value="16" oninput="applyGap(this.value)" />
+          <span class="val" id="gapVal">16px</span>
+        </div>
+        <div class="settings-section-title" style="margin-top:4px;">צפיפות תצוגה</div>
+        <div class="anim-options" id="densityOptions"></div>
+      </div>
+    </div>
+
+    <!-- ICONS & MISC -->
+    <div class="settings-card">
+      <div class="settings-card-header">✨ תצוגה כללית</div>
+      <div class="settings-card-body">
+        <div class="settings-section-title">צל כרטיסים</div>
+        <div class="settings-row">
+          <label>עוצמה</label>
+          <input type="range" id="shadowStr" min="0" max="3" value="1" step="1" oninput="applyShadow(this.value)" />
+          <span class="val" id="shadowVal">רגיל</span>
+        </div>
+        <div class="settings-section-title" style="margin-top:4px;">שקיפות גבול</div>
+        <div class="settings-row">
+          <label>עוצמה</label>
+          <input type="range" id="borderStr" min="0" max="100" value="25" oninput="applyBorder(this.value)" />
+          <span class="val" id="borderVal">25%</span>
+        </div>
+        <div class="settings-section-title" style="margin-top:4px;">אייקוני ניווט</div>
+        <div class="anim-options" id="iconOptions"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<!-- ===== MODAL: Add/Edit Recipe ===== -->
+<div class="modal-overlay" id="recipeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="recipeModalTitle">הוסף מתכון חדש</h3>
+      <button class="modal-close" onclick="closeModal('recipeModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>שם המתכון</label>
+        <input class="form-control" id="rName" placeholder="שם המתכון" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>קטגוריה</label>
+          <select class="form-control" id="rCategory">
+            <option value="salads">סלטים ומטבלים</option>
+            <option value="mains">מנות עיקריות</option>
+            <option value="sides">תוספות</option>
+            <option value="bread">לחם ומאפים</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>הוראות הכנה</label>
+          <textarea class="form-control" id="rInstructions" rows="2" placeholder="תיאור קצר..."></textarea>
+        </div>
+      </div>
+      <hr class="divider" />
+      <div class="flex-between mb-8">
+        <strong style="font-size:0.9rem;">מצרכים (ל-<span id="rServingsLabel">50</span> אנשים)</strong>
+        <button class="btn btn-outline btn-sm" onclick="addIngRow()">+ הוסף מצרך</button>
+      </div>
+      <div id="ingEditor"></div>
+      <input type="hidden" id="rEditIndex" value="-1" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('recipeModal')">ביטול</button>
+      <button class="btn btn-gold" onclick="saveRecipe()">💾 שמור מתכון</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Add Inventory Item ===== -->
+<div class="modal-overlay" id="itemModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>הוסף מוצר למלאי</h3>
+      <button class="modal-close" onclick="closeModal('itemModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>שם המוצר</label>
+        <input class="form-control" id="iName" placeholder="שם המוצר" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="form-group">
+          <label>קטגוריה</label>
+          <select class="form-control" id="iCategory">
+            <option value="vegetables">ירקות</option>
+            <option value="fruits">פירות</option>
+            <option value="meat">בשר ועוף</option>
+            <option value="fish">דגים</option>
+            <option value="dry">יבשים</option>
+            <option value="spices">תבלינים</option>
+            <option value="sauces">רטבים ושמנים</option>
+            <option value="drinks">שתייה</option>
+            <option value="disposable">חד פעמי</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>כמות קיימת</label>
+          <input class="form-control" id="iQty" type="number" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label>יחידת מידה</label>
+          <select class="form-control" id="iUnit">
+            <option value="יחידות">יחידות</option>
+            <option value="ק״ג">ק״ג</option>
+            <option value="גרם">גרם</option>
+            <option value="ליטר">ליטר</option>
+            <option value="מ״ל">מ״ל</option>
+            <option value="בקבוקים">בקבוקים</option>
+            <option value="חבילות">חבילות</option>
+            <option value="שקיות">שקיות</option>
+            <option value="קרטונים">קרטונים</option>
+            <option value="שקים">שקים</option>
+            <option value="צרורות">צרורות</option>
+            <option value="ראשים">ראשים</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>מינימום נדרש</label>
+        <input class="form-control" id="iMin" type="number" value="1" min="0" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('itemModal')">ביטול</button>
+      <button class="btn btn-gold" onclick="saveItem()">💾 הוסף למלאי</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE SDK
+════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }              from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, onValue, update, remove }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// ┌─────────────────────────────────────────────────────────┐
+// │  🔧 הדבק כאן את הפרטים שלך מ-Firebase Console         │
+// │     Project Settings → General → Your apps → Web       │
+// └─────────────────────────────────────────────────────────┘
+const firebaseConfig = {
+  apiKey:            "AIzaSyCUVoWvyZzd3vPueh5L2LV3768ZUt8kYKE",
+  authDomain:        "nihul-mitbach.firebaseapp.com",
+  databaseURL:       "https://nihul-mitbach-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "nihul-mitbach",
+  storageBucket:     "nihul-mitbach.firebasestorage.app",
+  messagingSenderId: "422708292871",
+  appId:             "1:422708292871:web:328b4f631b296fac3929a2"
+};
+// ──────────────────────────────────────────────────────────
+
+const fbApp = initializeApp(firebaseConfig);
+const db    = getDatabase(fbApp);
+
+// ============================================================
+//  SYNC LAYER  — כל שינוי → Firebase → כל המכשירים
+// ============================================================
+let _syncing = false; // מונע לולאת כתיבה
+
+function fbSaveInventory() {
+  if (_syncing) return;
+  set(ref(db, 'inventory'), inventory.map(i => ({...i})));
+}
+function fbSaveRecipes() {
+  if (_syncing) return;
+  set(ref(db, 'recipes'), recipes.map(r => ({...r})));
+}
+function fbSavePeople() {
+  if (_syncing) return;
+  set(ref(db, 'peopleCount'), peopleCount);
+}
+
+// האזנה לשינויים מ-Firebase (מכשירים אחרים)
+function setupListeners() {
+  onValue(ref(db, 'inventory'), snap => {
+    const data = snap.val();
+    if (data) {
+      _syncing = true;
+      inventory = Array.isArray(data) ? data : Object.values(data);
+      _syncing = false;
+      renderAll();
+      showSyncDot();
+    }
+  });
+  onValue(ref(db, 'recipes'), snap => {
+    const data = snap.val();
+    if (data) {
+      _syncing = true;
+      recipes = Array.isArray(data) ? data : Object.values(data);
+      _syncing = false;
+      renderAll();
+      showSyncDot();
+    }
+  });
+  onValue(ref(db, 'peopleCount'), snap => {
+    const v = snap.val();
+    if (v !== null && v !== peopleCount) {
+      _syncing = true;
+      peopleCount = v;
+      document.getElementById('peopleCount').value = v;
+      _syncing = false;
+      renderAll();
+      showSyncDot();
+    }
+  });
+}
+
+function showSyncDot() {
+  const dot = document.getElementById('syncDot');
+  if (!dot) return;
+  dot.style.background = '#4caf50';
+  dot.title = 'מסונכרן ✓';
+  setTimeout(() => { dot.style.background = '#888'; dot.title = 'מחובר'; }, 1500);
+}
+
+// ── INIT: טעינה ראשונית — אם ריק ב-Firebase, כותב ברירות מחדל
+onValue(ref(db, 'inventory'), snap => {
+  if (!snap.exists()) {
+    fbSaveInventory();
+    fbSaveRecipes();
+    fbSavePeople();
+  }
+  setupListeners();
+}, { onlyOnce: true });
+
+// ── חשוף פונקציות ל-window כדי ש-onclick יעבוד עם type="module"
+window.fbSaveInventory = fbSaveInventory;
+window.fbSaveRecipes   = fbSaveRecipes;
+window.fbSavePeople    = fbSavePeople;
+</script>
+
+<script>
+// ============================================================
+//  DATA STORE
+// ============================================================
+const ALL_UNITS = ['יחידות','ק״ג','גרם','ליטר','מ״ל','בקבוקים','חבילות','שקיות','קרטונים','שקים','צרורות','ראשים'];
+
+const CATEGORIES = {
+  vegetables: { label: 'ירקות', icon: '🥦' },
+  fruits:     { label: 'פירות', icon: '🍎' },
+  meat:       { label: 'בשר ועוף', icon: '🍗' },
+  fish:       { label: 'דגים', icon: '🐟' },
+  dry:        { label: 'יבשים', icon: '🌾' },
+  spices:     { label: 'תבלינים', icon: '🫙' },
+  sauces:     { label: 'רטבים ושמנים', icon: '🫒' },
+  drinks:     { label: 'שתייה', icon: '🥂' },
+  disposable: { label: 'חד פעמי', icon: '🥤' },
+};
+
+const RECIPE_CATS = {
+  salads: { label: 'סלטים ומטבלים', icon: '🥗' },
+  mains:  { label: 'מנות עיקריות', icon: '🍖' },
+  sides:  { label: 'תוספות', icon: '🍚' },
+  bread:  { label: 'לחם ומאפים', icon: '🍞' },
+};
+
+// ---- INVENTORY ----
+let inventory = [
+  // Vegetables
+  { id:1,  name:'עגבניות',   category:'vegetables', qty:2,  unit:'ק״ג',      min:3  },
+  { id:2,  name:'מלפפונים',  category:'vegetables', qty:3,  unit:'ק״ג',      min:2  },
+  { id:3,  name:'חסה',       category:'vegetables', qty:0,  unit:'יחידות',   min:4  },
+  { id:4,  name:'כרוב לבן',  category:'vegetables', qty:1,  unit:'יחידות',   min:2  },
+  { id:5,  name:'גזר',       category:'vegetables', qty:2,  unit:'ק״ג',      min:1  },
+  { id:6,  name:'בצל',       category:'vegetables', qty:3,  unit:'ק״ג',      min:2  },
+  { id:7,  name:'בטטה',      category:'vegetables', qty:1,  unit:'ק״ג',      min:2  },
+  { id:8,  name:'אבוקדו',    category:'vegetables', qty:6,  unit:'יחידות',   min:10 },
+  { id:9,  name:'שום',       category:'vegetables', qty:2,  unit:'ראשים',    min:3  },
+  { id:10, name:'לימון',     category:'fruits',     qty:5,  unit:'יחידות',   min:6  },
+  { id:11, name:'פטרוזיליה', category:'vegetables', qty:0,  unit:'צרורות',   min:3  },
+  { id:12, name:'כוסברה',    category:'vegetables', qty:0,  unit:'צרורות',   min:2  },
+  // Meat
+  { id:13, name:'עוף שלם',   category:'meat',       qty:4,  unit:'יחידות',   min:5  },
+  { id:14, name:'פרגיות',    category:'meat',       qty:3,  unit:'ק״ג',      min:4  },
+  { id:15, name:'כנפיים',    category:'meat',       qty:2,  unit:'ק״ג',      min:3  },
+  { id:16, name:'בשר טחון',  category:'meat',       qty:1,  unit:'ק״ג',      min:2  },
+  { id:17, name:'בקר לבישול',category:'meat',       qty:0,  unit:'ק״ג',      min:2  },
+  // Fish
+  { id:18, name:'סלמון',     category:'fish',       qty:2,  unit:'ק״ג',      min:3  },
+  // Dry
+  { id:19, name:'אורז',      category:'dry',        qty:3,  unit:'ק״ג',      min:2  },
+  { id:20, name:'קינואה',    category:'dry',        qty:0.5,unit:'ק״ג',      min:1  },
+  { id:21, name:'חומוס יבש', category:'dry',        qty:1,  unit:'ק״ג',      min:1  },
+  { id:22, name:'עדשים',     category:'dry',        qty:0,  unit:'ק״ג',      min:0.5},
+  { id:23, name:'אטריות',    category:'dry',        qty:1,  unit:'ק״ג',      min:1  },
+  // Spices
+  { id:24, name:'מלח',       category:'spices',     qty:2,  unit:'ק״ג',      min:0.5},
+  { id:25, name:'פלפל שחור', category:'spices',     qty:0.2,unit:'ק״ג',      min:0.1},
+  { id:26, name:'פפריקה',    category:'spices',     qty:0.1,unit:'ק״ג',      min:0.1},
+  { id:27, name:'כמון',      category:'spices',     qty:0.1,unit:'ק״ג',      min:0.1},
+  { id:28, name:'כורכום',    category:'spices',     qty:0.05,unit:'ק״ג',     min:0.1},
+  { id:29, name:'פלפל חריף', category:'spices',     qty:0.05,unit:'ק״ג',     min:0.05},
+  { id:30, name:'רוזמרין',   category:'spices',     qty:0,  unit:'ק״ג',      min:0.05},
+  // Sauces
+  { id:31, name:'שמן זית',   category:'sauces',     qty:2,  unit:'ליטר',     min:1  },
+  { id:32, name:'שמן קנולה', category:'sauces',     qty:3,  unit:'ליטר',     min:1  },
+  { id:33, name:'טחינה גולמית',category:'sauces',   qty:1,  unit:'ק״ג',      min:1  },
+  { id:34, name:'סויה',      category:'sauces',     qty:0.5,unit:'בקבוקים',  min:1  },
+  { id:35, name:'פסטו',      category:'sauces',     qty:0,  unit:'בקבוקים',  min:2  },
+  { id:36, name:'לימון סחוט',category:'sauces',     qty:0,  unit:'ליטר',     min:0.5},
+  // Drinks
+  { id:45, name:'מים מינרליים',  category:'drinks', qty:20,  unit:'בקבוקים', min:30 },
+  { id:46, name:'סודה',          category:'drinks', qty:10,  unit:'בקבוקים', min:15 },
+  { id:47, name:'מיץ תפוזים',   category:'drinks', qty:5,   unit:'בקבוקים', min:8  },
+  { id:48, name:'מיץ ענבים',    category:'drinks', qty:3,   unit:'בקבוקים', min:6  },
+  { id:49, name:'קולה',          category:'drinks', qty:0,   unit:'בקבוקים', min:6  },
+  { id:50, name:'לימונדה',       category:'drinks', qty:0,   unit:'בקבוקים', min:4  },
+  { id:51, name:'תה',            category:'drinks', qty:2,   unit:'חבילות',  min:2  },
+  { id:52, name:'קפה',           category:'drinks', qty:1,   unit:'חבילות',  min:1  },
+  { id:53, name:'סוכר',          category:'drinks', qty:1,   unit:'ק״ג',     min:0.5},
+  // Disposable
+  { id:37, name:'צלחות גדולות',category:'disposable',qty:100,unit:'יחידות',  min:60 },
+  { id:38, name:'צלחות קטנות',category:'disposable',qty:80, unit:'יחידות',   min:60 },
+  { id:39, name:'כוסות',     category:'disposable', qty:150,unit:'יחידות',   min:100},
+  { id:40, name:'מזלגות',    category:'disposable', qty:80, unit:'יחידות',   min:60 },
+  { id:41, name:'סכינים',    category:'disposable', qty:80, unit:'יחידות',   min:60 },
+  { id:42, name:'כפות',      category:'disposable', qty:80, unit:'יחידות',   min:60 },
+  { id:43, name:'מפיות',     category:'disposable', qty:200,unit:'יחידות',   min:100},
+  { id:44, name:'כלים לסלטים',category:'disposable',qty:10, unit:'יחידות',   min:8  },
+];
+
+// ---- RECIPES ----
+// quantities are for base 50 people
+let recipes = [
+  // SALADS
+  {
+    id:1, category:'salads', selected:true,
+    name:'טחינה',
+    ingredients:[
+      { itemName:'טחינה גולמית', qty:1,    unit:'ק״ג'    },
+      { itemName:'לימון',        qty:8,    unit:'יחידות' },
+      { itemName:'שום',          qty:3,    unit:'ראשים'  },
+      { itemName:'מלח',          qty:0.03, unit:'ק״ג'    },
+      { itemName:'כמון',         qty:0.02, unit:'ק״ג'    },
+    ],
+    instructions:'מערבבים טחינה גולמית עם מיץ לימון, שום כתוש, מלח וכמון. מדללים עם מעט מים קרים עד לקרמי.'
+  },
+  {
+    id:2, category:'salads', selected:true,
+    name:'חומוס',
+    ingredients:[
+      { itemName:'חומוס יבש',    qty:1,    unit:'ק״ג'    },
+      { itemName:'טחינה גולמית', qty:0.3,  unit:'ק״ג'    },
+      { itemName:'לימון',        qty:4,    unit:'יחידות' },
+      { itemName:'שום',          qty:2,    unit:'ראשים'  },
+      { itemName:'מלח',          qty:0.02, unit:'ק״ג'    },
+      { itemName:'שמן זית',      qty:0.1,  unit:'ליטר'   },
+    ],
+    instructions:'משרים חומוס 12 שעות, מבשלים עד ריכוך. מעבדים עם טחינה, לימון, שום ומלח.'
+  },
+  {
+    id:3, category:'salads', selected:true,
+    name:'סחוג',
+    ingredients:[
+      { itemName:'פלפל חריף',    qty:0.15, unit:'ק״ג'    },
+      { itemName:'כוסברה',       qty:2,    unit:'צרורות' },
+      { itemName:'שום',          qty:1,    unit:'ראשים'  },
+      { itemName:'כמון',         qty:0.02, unit:'ק״ג'    },
+      { itemName:'מלח',          qty:0.01, unit:'ק״ג'    },
+      { itemName:'לימון',        qty:2,    unit:'יחידות' },
+    ],
+    instructions:'טוחנים פלפל חריף, כוסברה, שום, כמון ומלח. מוסיפים מיץ לימון.'
+  },
+  {
+    id:4, category:'salads', selected:true,
+    name:'סלט כרוב',
+    ingredients:[
+      { itemName:'כרוב לבן',     qty:2,    unit:'יחידות' },
+      { itemName:'גזר',          qty:1,    unit:'ק״ג'    },
+      { itemName:'לימון',        qty:3,    unit:'יחידות' },
+      { itemName:'שמן זית',      qty:0.1,  unit:'ליטר'   },
+      { itemName:'מלח',          qty:0.02, unit:'ק״ג'    },
+      { itemName:'פטרוזיליה',    qty:1,    unit:'צרורות' },
+    ],
+    instructions:'קוצצים כרוב ומגרדים גזר. מתבלים עם לימון, שמן זית ומלח. מוסיפים פטרוזיליה.'
+  },
+  {
+    id:5, category:'salads', selected:true,
+    name:'סלט ישראלי',
+    ingredients:[
+      { itemName:'עגבניות',      qty:2,    unit:'ק״ג'    },
+      { itemName:'מלפפונים',     qty:2,    unit:'ק״ג'    },
+      { itemName:'בצל',          qty:1,    unit:'ק״ג'    },
+      { itemName:'פטרוזיליה',    qty:2,    unit:'צרורות' },
+      { itemName:'שמן זית',      qty:0.15, unit:'ליטר'   },
+      { itemName:'לימון',        qty:3,    unit:'יחידות' },
+      { itemName:'מלח',          qty:0.02, unit:'ק״ג'    },
+    ],
+    instructions:'חותכים לקוביות קטנות. מערבבים עם שמן זית, לימון ומלח.'
+  },
+  {
+    id:6, category:'salads', selected:false,
+    name:'מטבוחה',
+    ingredients:[
+      { itemName:'עגבניות',      qty:3,    unit:'ק״ג'    },
+      { itemName:'פלפל חריף',    qty:0.1,  unit:'ק״ג'    },
+      { itemName:'שום',          qty:2,    unit:'ראשים'  },
+      { itemName:'שמן קנולה',    qty:0.2,  unit:'ליטר'   },
+      { itemName:'פפריקה',       qty:0.03, unit:'ק״ג'    },
+      { itemName:'כמון',         qty:0.02, unit:'ק״ג'    },
+      { itemName:'מלח',          qty:0.02, unit:'ק״ג'    },
+    ],
+    instructions:'מבשלים עגבניות מרוסקות עם שום, פלפל, פפריקה וכמון על אש קטנה 45 דקות.'
+  },
+  {
+    id:7, category:'salads', selected:false,
+    name:'אבוקדו',
+    ingredients:[
+      { itemName:'אבוקדו',       qty:15,   unit:'יחידות' },
+      { itemName:'לימון',        qty:3,    unit:'יחידות' },
+      { itemName:'מלח',          qty:0.01, unit:'ק״ג'    },
+      { itemName:'שמן זית',      qty:0.05, unit:'ליטר'   },
+    ],
+    instructions:'מועכים אבוקדו עם לימון, מלח ושמן זית. מגישים מיד.'
+  },
+  // MAINS
+  {
+    id:8, category:'mains', selected:true,
+    name:'עוף בתנור',
+    ingredients:[
+      { itemName:'עוף שלם',      qty:5,    unit:'יחידות' },
+      { itemName:'שום',          qty:3,    unit:'ראשים'  },
+      { itemName:'שמן זית',      qty:0.2,  unit:'ליטר'   },
+      { itemName:'פפריקה',       qty:0.05, unit:'ק״ג'    },
+      { itemName:'כמון',         qty:0.03, unit:'ק״ג'    },
+      { itemName:'כורכום',       qty:0.02, unit:'ק״ג'    },
+      { itemName:'מלח',          qty:0.05, unit:'ק״ג'    },
+      { itemName:'פלפל שחור',    qty:0.02, unit:'ק״ג'    },
+    ],
+    instructions:'ממרים עוף בתערובת תבלינים ושמן זית. צולים ב-180° כ-90 דקות.'
+  },
+  {
+    id:9, category:'mains', selected:false,
+    name:'פרגיות',
+    ingredients:[
+      { itemName:'פרגיות',       qty:4,    unit:'ק״ג'    },
+      { itemName:'שמן קנולה',    qty:0.2,  unit:'ליטר'   },
+      { itemName:'סויה',         qty:0.3,  unit:'בקבוקים'},
+      { itemName:'שום',          qty:2,    unit:'ראשים'  },
+      { itemName:'פפריקה',       qty:0.04, unit:'ק״ג'    },
+      { itemName:'מלח',          qty:0.03, unit:'ק״ג'    },
+    ],
+    instructions:'מאמרינים פרגיות עם שמן, סויה, שום ופפריקה. צולים בגריל או תנור 35 דקות.'
+  },
+  {
+    id:10, category:'mains', selected:false,
+    name:'כנפיים בדבש וסויה',
+    ingredients:[
+      { itemName:'כנפיים',       qty:3,    unit:'ק״ג'    },
+      { itemName:'סויה',         qty:0.3,  unit:'בקבוקים'},
+      { itemName:'שמן קנולה',    qty:0.15, unit:'ליטר'   },
+      { itemName:'שום',          qty:1,    unit:'ראשים'  },
+      { itemName:'פפריקה',       qty:0.03, unit:'ק״ג'    },
+    ],
+    instructions:'מאמרינים 2 שעות. צולים ב-200° 40 דקות עד שחום.'
+  },
+  {
+    id:11, category:'mains', selected:false,
+    name:'קציצות בקר ברוטב',
+    ingredients:[
+      { itemName:'בשר טחון',     qty:2,    unit:'ק״ג'    },
+      { itemName:'בצל',          qty:1,    unit:'ק״ג'    },
+      { itemName:'עגבניות',      qty:1,    unit:'ק״ג'    },
+      { itemName:'פפריקה',       qty:0.04, unit:'ק״ג'    },
+      { itemName:'כמון',         qty:0.02, unit:'ק״ג'    },
+      { itemName:'מלח',          qty:0.03, unit:'ק״ג'    },
+      { itemName:'פלפל שחור',    qty:0.01, unit:'ק״ג'    },
+      { itemName:'שמן קנולה',    qty:0.1,  unit:'ליטר'   },
+    ],
+    instructions:'מכינים קציצות מבשר+תבלינים. מטגנים ומבשלים ברוטב עגבניות.'
+  },
+  {
+    id:12, category:'mains', selected:false,
+    name:'סלמון בפסטו',
+    ingredients:[
+      { itemName:'סלמון',        qty:2,    unit:'ק״ג'    },
+      { itemName:'פסטו',         qty:2,    unit:'בקבוקים'},
+      { itemName:'לימון',        qty:3,    unit:'יחידות' },
+      { itemName:'שמן זית',      qty:0.1,  unit:'ליטר'   },
+      { itemName:'מלח',          qty:0.02, unit:'ק״ג'    },
+    ],
+    instructions:'ממרים סלמון בפסטו ולימון. אופים ב-180° 20 דקות.'
+  },
+  // SIDES
+  {
+    id:13, category:'sides', selected:true,
+    name:'אורז לבן',
+    ingredients:[
+      { itemName:'אורז',         qty:3,    unit:'ק״ג'    },
+      { itemName:'שמן קנולה',    qty:0.1,  unit:'ליטר'   },
+      { itemName:'מלח',          qty:0.04, unit:'ק״ג'    },
+    ],
+    instructions:'מטגנים אורז 2 דקות בשמן. מוסיפים 6 ליטר מים+מלח. מבשלים 18 דקות מכוסה.'
+  },
+  {
+    id:14, category:'sides', selected:false,
+    name:'חמין',
+    ingredients:[
+      { itemName:'בקר לבישול',   qty:2,    unit:'ק״ג'    },
+      { itemName:'עדשים',        qty:0.5,  unit:'ק״ג'    },
+      { itemName:'חומוס יבש',    qty:0.5,  unit:'ק״ג'    },
+      { itemName:'בצל',          qty:1,    unit:'ק״ג'    },
+      { itemName:'שום',          qty:2,    unit:'ראשים'  },
+      { itemName:'פפריקה',       qty:0.04, unit:'ק״ג'    },
+      { itemName:'כמון',         qty:0.03, unit:'ק״ג'    },
+      { itemName:'כורכום',       qty:0.02, unit:'ק״ג'    },
+      { itemName:'מלח',          qty:0.04, unit:'ק״ג'    },
+    ],
+    instructions:'מרכיבים בסיר. מבשלים 8 שעות על אש נמוכה (או כל הלילה).'
+  },
+  {
+    id:15, category:'sides', selected:false,
+    name:'קינואה ירקות',
+    ingredients:[
+      { itemName:'קינואה',       qty:2,    unit:'ק״ג'    },
+      { itemName:'גזר',          qty:1,    unit:'ק״ג'    },
+      { itemName:'בטטה',         qty:1,    unit:'ק״ג'    },
+      { itemName:'שמן זית',      qty:0.1,  unit:'ליטר'   },
+      { itemName:'מלח',          qty:0.03, unit:'ק״ג'    },
+    ],
+    instructions:'מבשלים קינואה עם ירקות קלויים. מתבלים בשמן זית ומלח.'
+  },
+];
+
+let nextId = 100;
+let peopleCount = 50;
+const BASE_PEOPLE = 50;
+
+// ============================================================
+//  UTILITIES
+// ============================================================
+function getScale() { return peopleCount / BASE_PEOPLE; }
+
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 2800);
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const idx = ['dashboard','recipes','inventory','shopping','design'].indexOf(id);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  if (id === 'design') renderDesignPage();
+  renderAll();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function changePeople(d) {
+  peopleCount = Math.max(1, peopleCount + d);
+  document.getElementById('peopleCount').value = peopleCount;
+  window.fbSavePeople && fbSavePeople();
+  renderAll();
+}
+function onPeopleChange() {
+  peopleCount = parseInt(document.getElementById('peopleCount').value) || 1;
+  window.fbSavePeople && fbSavePeople();
+  renderAll();
+}
+
+// ============================================================
+//  SHOPPING LIST COMPUTATION
+// ============================================================
+function computeShopping() {
+  const needed = {}; // key: itemName -> { qty, unit }
+  const scale = getScale();
+
+  recipes.filter(r => r.selected).forEach(r => {
+    r.ingredients.forEach(ing => {
+      const key = ing.itemName;
+      if (!needed[key]) needed[key] = { qty: 0, unit: ing.unit };
+      needed[key].qty += ing.qty * scale;
+    });
+  });
+
+  const missing = [];
+  Object.entries(needed).forEach(([name, need]) => {
+    // Find in inventory
+    const inv = inventory.find(i => i.name === name);
+    const have = inv ? Number(inv.qty) : 0;
+    const diff = need.qty - have;
+    if (diff > 0) {
+      missing.push({ name, need: need.qty, have, diff, unit: need.unit, category: inv ? inv.category : 'other' });
+    }
+  });
+
+  return missing;
+}
+
+// ============================================================
+//  STATS
+// ============================================================
+function renderStats() {
+  const selectedR = recipes.filter(r => r.selected).length;
+  const totalInv = inventory.length;
+  const lowInv = inventory.filter(i => Number(i.qty) < i.min).length;
+  const shopItems = computeShopping().length;
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="num">${peopleCount}</div><div class="lbl">אורחים</div></div>
+    <div class="stat-card"><div class="num">${selectedR}</div><div class="lbl">מתכונים נבחרו</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--red)">${lowInv}</div><div class="lbl">מוצרים חסרים</div></div>
+    <div class="stat-card"><div class="num">${shopItems}</div><div class="lbl">פריטים לקניה</div></div>
+  `;
+}
+
+// ============================================================
+//  RENDER RECIPES PANEL (dashboard)
+// ============================================================
+function renderRecipesPanel() {
+  const container = document.getElementById('recipesPanel');
+  if (!container) return;
+  const scale = getScale();
+
+  let html = '';
+  Object.entries(RECIPE_CATS).forEach(([catKey, cat]) => {
+    const catRecipes = recipes.filter(r => r.category === catKey);
+    if (!catRecipes.length) return;
+    html += `<div class="section-group">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span>${cat.icon} ${cat.label} (${catRecipes.length})</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="section-body open">`;
+    catRecipes.forEach(r => {
+      const ings = r.ingredients.map(ing => {
+        const q = (ing.qty * scale).toFixed(2).replace(/\.?0+$/,'');
+        return `<li><span>${ing.itemName}</span><span class="ing-qty">${q} ${ing.unit}</span></li>`;
+      }).join('');
+      html += `
+        <div class="recipe-item">
+          <div class="recipe-item-header">
+            <div class="recipe-check ${r.selected?'checked':''}" onclick="toggleRecipe(${r.id},event)">
+              ${r.selected?'✓':''}
+            </div>
+            <span class="recipe-name">${r.name}</span>
+            <button class="recipe-expand-btn" onclick="toggleRecipeDetail(this)">▼</button>
+          </div>
+          <div class="recipe-details">
+            <h4>מצרכים ל-${peopleCount} אנשים</h4>
+            <ul class="ingredients-list">${ings}</ul>
+            <h4>הכנה</h4>
+            <p class="recipe-instructions">${r.instructions}</p>
+          </div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  });
+  container.innerHTML = html;
+  document.getElementById('selectedCount').textContent = recipes.filter(r=>r.selected).length + ' נבחרו';
+}
+
+// ============================================================
+//  RENDER INVENTORY PANEL (dashboard)
+// ============================================================
+function renderInventoryPanel() {
+  const container = document.getElementById('inventoryPanel');
+  if (!container) return;
+
+  const low = inventory.filter(i => Number(i.qty) < i.min);
+  const ok  = inventory.filter(i => Number(i.qty) >= i.min);
+
+  let html = '';
+  if (low.length) {
+    html += `<div class="section-group"><div class="section-header open" onclick="toggleSection(this)"><span>⚠️ חסרים / נמוכים (${low.length})</span><span class="arrow">▼</span></div>
+    <div class="section-body open">`;
+    low.forEach(item => { html += invItemHtml(item); });
+    html += '</div></div>';
+  }
+
+  Object.entries(CATEGORIES).forEach(([catKey, cat]) => {
+    const items = ok.filter(i => i.category === catKey);
+    if (!items.length) return;
+    html += `<div class="section-group"><div class="section-header" onclick="toggleSection(this)">
+      <span>${cat.icon} ${cat.label} (${items.length})</span><span class="arrow">▼</span>
+    </div><div class="section-body">`;
+    items.forEach(item => { html += invItemHtml(item); });
+    html += '</div></div>';
+  });
+
+  container.innerHTML = html;
+  document.getElementById('lowStockBadge').textContent = low.length + ' חסרים';
+}
+
+function unitOptionsHtml(selected) {
+  return ALL_UNITS.map(u => `<option value="${u}" ${u===selected?'selected':''}>${u}</option>`).join('');
+}
+
+function invItemHtml(item) {
+  const n = Number(item.qty);
+  const status = n === 0 ? 'empty' : n < item.min ? 'low' : 'ok';
+  const cls = n < item.min ? 'low' : '';
+  const statusIcon = n === 0 ? '🔴' : n < item.min ? '🟡' : '🟢';
+  return `<div style="padding:8px 10px;border-bottom:1px solid rgba(201,149,42,0.08);display:flex;flex-direction:column;gap:5px;">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:0.78rem;">${statusIcon}</span>
+      <input class="inv-name-input" value="${item.name}" onchange="updateName(${item.id},this.value)" title="ערוך שם" style="flex:1;font-weight:600;font-size:0.87rem;" />
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      <span style="font-size:0.72rem;color:#aaa;">יש:</span>
+      <input class="inv-qty-input ${cls}" type="number" value="${item.qty}" min="0"
+        onchange="updateQty(${item.id},this.value)" step="0.1" style="width:52px;" />
+      <select class="inv-unit-select" onchange="updateUnit(${item.id},this.value)">
+        ${unitOptionsHtml(item.unit)}
+      </select>
+      <span style="font-size:0.72rem;color:#aaa;margin-right:4px;">מינ׳:</span>
+      <input class="inv-min-input" type="number" value="${item.min}" min="0" step="0.5"
+        onchange="updateMin(${item.id},this.value)" style="width:44px;" />
+    </div>
+  </div>`;
+}
+
+// ============================================================
+//  RENDER SHOPPING PANEL (dashboard)
+// ============================================================
+function renderShoppingPanel() {
+  const container = document.getElementById('shoppingPanel');
+  if (!container) return;
+
+  const missing = computeShopping();
+  document.getElementById('shopBadge').textContent = missing.length + ' פריטים';
+
+  if (!missing.length) {
+    container.innerHTML = `<div class="shop-empty"><div class="icon">✅</div><div>המלאי מספיק לשבת הזו!</div></div>`;
+    return;
+  }
+
+  // Group by category
+  const bycat = {};
+  missing.forEach(m => {
+    const cat = m.category || 'other';
+    if (!bycat[cat]) bycat[cat] = [];
+    bycat[cat].push(m);
+  });
+
+  let html = '';
+  Object.entries(bycat).forEach(([cat, items]) => {
+    const catInfo = CATEGORIES[cat] || { label:'אחר', icon:'📋' };
+    html += `<div class="shop-category-title">${catInfo.icon} ${catInfo.label}</div>`;
+    items.forEach(m => {
+      const diff = m.diff.toFixed(2).replace(/\.?0+$/,'');
+      html += `<div class="shop-item">
+        <span class="shop-item-name">${m.name}</span>
+        <span><span class="shop-item-qty">${diff}</span> <span class="shop-item-unit">${m.unit}</span></span>
+      </div>`;
+    });
+  });
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+//  FULL RECIPES PAGE
+// ============================================================
+function renderFullRecipes(filter='') {
+  const container = document.getElementById('fullRecipesPanel');
+  if (!container) return;
+  const scale = getScale();
+  const f = filter.toLowerCase();
+
+  let html = '';
+  Object.entries(RECIPE_CATS).forEach(([catKey, cat]) => {
+    const catRecipes = recipes.filter(r =>
+      r.category === catKey &&
+      (f === '' || r.name.toLowerCase().includes(f) || r.ingredients.some(i=>i.itemName.includes(f)))
+    );
+    if (!catRecipes.length) return;
+    html += `<div class="section-group" style="margin-bottom:12px;">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <span>${cat.icon} ${cat.label} (${catRecipes.length})</span><span class="arrow">▼</span>
+      </div>
+      <div class="section-body open" style="padding:12px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;">`;
+    catRecipes.forEach(r => {
+      const ings = r.ingredients.map(ing => {
+        const q = (ing.qty * scale).toFixed(2).replace(/\.?0+$/,'');
+        return `<li><span>${ing.itemName}</span><span class="ing-qty">${q} ${ing.unit}</span></li>`;
+      }).join('');
+      html += `
+        <div class="panel" style="overflow:visible;">
+          <div style="padding:12px 14px;background:var(--cream-dk);display:flex;align-items:center;gap:10px;border-radius:11px 11px 0 0;">
+            <div class="recipe-check ${r.selected?'checked':''}" onclick="toggleRecipe(${r.id})" style="cursor:pointer;">${r.selected?'✓':''}</div>
+            <strong style="flex:1;">${r.name}</strong>
+            <button class="btn btn-outline btn-sm" onclick="editRecipe(${r.id})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRecipe(${r.id})">🗑</button>
+          </div>
+          <div style="padding:12px 14px;">
+            <h4 style="font-size:0.78rem;color:var(--gold-dk);margin-bottom:6px;">מצרכים ל-${peopleCount} אנשים</h4>
+            <ul class="ingredients-list">${ings}</ul>
+            <h4 style="font-size:0.78rem;color:var(--gold-dk);margin:8px 0 4px;">הוראות הכנה</h4>
+            <p class="recipe-instructions">${r.instructions}</p>
+          </div>
+        </div>`;
+    });
+    html += '</div></div></div>';
+  });
+  container.innerHTML = html || '<p class="text-muted" style="text-align:center;padding:32px;">לא נמצאו מתכונים</p>';
+}
+
+function filterRecipes(v) { renderFullRecipes(v); }
+
+// ============================================================
+//  FULL INVENTORY PAGE
+// ============================================================
+function renderFullInventory(filter='') {
+  const container = document.getElementById('fullInventoryPanel');
+  if (!container) return;
+  const f = filter.toLowerCase();
+
+  let html = '';
+  Object.entries(CATEGORIES).forEach(([catKey, cat]) => {
+    const items = inventory.filter(i =>
+      i.category === catKey &&
+      (f === '' || i.name.toLowerCase().includes(f))
+    );
+    if (!items.length) return;
+    html += `<div class="section-group" style="margin-bottom:10px;">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <span>${cat.icon} ${cat.label} (${items.length})</span><span class="arrow">▼</span>
+      </div>
+      <div class="section-body open">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px;padding:4px;">`;
+    items.forEach(item => {
+      const n = Number(item.qty);
+      const status = n === 0 ? 'empty' : n < item.min ? 'low' : 'ok';
+      const statusLabel = n === 0 ? '🔴 אין מלאי' : n < item.min ? '🟡 מלאי נמוך' : '🟢 תקין';
+      html += `<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <input style="font-weight:600;font-size:0.9rem;border:1px solid transparent;border-radius:5px;padding:2px 6px;background:transparent;font-family:var(--font-b);flex:1;outline:none;transition:border-color 0.2s;"
+            value="${item.name}" onchange="updateName(${item.id},this.value)"
+            onfocus="this.style.borderColor='var(--gold)';this.style.background='#fff'"
+            onblur="this.style.borderColor='transparent';this.style.background='transparent'"
+            title="לחץ לעריכת שם" />
+          <span style="font-size:0.72rem;margin-right:8px;">${statusLabel}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <label style="font-size:0.75rem;color:#888;">כמות:</label>
+          <input class="inv-qty-input ${n<item.min?'low':''}" type="number" value="${item.qty}" min="0" step="0.5"
+            onchange="updateQty(${item.id},this.value)" style="width:60px;" />
+          <select class="inv-unit-select" onchange="updateUnit(${item.id},this.value)" title="יחידת מידה">
+            ${unitOptionsHtml(item.unit)}
+          </select>
+          <label style="font-size:0.75rem;color:#aaa;margin-right:6px;">מינ׳:</label>
+          <input class="inv-min-input" type="number" value="${item.min}" min="0" step="0.5"
+            onchange="updateMin(${item.id},this.value)" style="width:52px;" title="מינימום נדרש" />
+          <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})" style="padding:3px 7px;margin-right:auto;">✕</button>
+        </div>
+      </div>`;
+    });
+    html += '</div></div></div>';
+  });
+  container.innerHTML = html || '<p class="text-muted" style="text-align:center;padding:32px;">לא נמצאו פריטים</p>';
+}
+
+function filterInventory(v) { renderFullInventory(v); }
+
+// ============================================================
+//  FULL SHOPPING PAGE
+// ============================================================
+function renderFullShopping() {
+  const container = document.getElementById('fullShoppingPanel');
+  if (!container) return;
+  const missing = computeShopping();
+
+  if (!missing.length) {
+    container.innerHTML = `<div class="panel"><div class="panel-body"><div class="shop-empty">
+      <div class="icon">✅</div>
+      <div>המלאי מספיק לכל המתכונים הנבחרים!</div>
+      <p class="text-muted text-sm mt-8">בחר מתכונים נוספים או הוסף פריטים למלאי.</p>
+    </div></div></div>`;
+    return;
+  }
+
+  const bycat = {};
+  missing.forEach(m => {
+    const cat = m.category || 'other';
+    if (!bycat[cat]) bycat[cat] = [];
+    bycat[cat].push(m);
+  });
+
+  let html = `<div class="panel"><div class="panel-body">
+    <p class="text-sm text-muted" style="margin-bottom:12px;">מה שצריך לקנות לפי המתכונים שנבחרו עבור ${peopleCount} אנשים.</p>`;
+
+  Object.entries(bycat).forEach(([cat, items]) => {
+    const catInfo = CATEGORIES[cat] || { label:'אחר', icon:'📋' };
+    html += `<div style="margin-bottom:16px;">
+      <div class="shop-category-title">${catInfo.icon} ${catInfo.label}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;">`;
+    items.forEach(m => {
+      const diff = m.diff.toFixed(2).replace(/\.?0+$/,'');
+      const have = Number(m.have).toFixed(2).replace(/\.?0+$/,'');
+      const need = m.need.toFixed(2).replace(/\.?0+$/,'');
+      html += `<div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:10px 14px;">
+        <div style="font-weight:700;margin-bottom:4px;">${m.name}</div>
+        <div style="font-size:0.8rem;color:#888;margin-bottom:4px;">נדרש: ${need} ${m.unit} | יש: ${have} ${m.unit}</div>
+        <div style="color:var(--red);font-weight:700;font-size:1rem;">🛒 ${diff} ${m.unit}</div>
+      </div>`;
+    });
+    html += '</div></div>';
+  });
+  html += '</div></div>';
+  container.innerHTML = html;
+}
+
+function printShopping() {
+  window.print();
+}
+
+// ============================================================
+//  INTERACTIONS
+// ============================================================
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function toggleRecipeDetail(btn) {
+  btn.classList.toggle('open');
+  const detail = btn.closest('.recipe-item').querySelector('.recipe-details');
+  detail.classList.toggle('open');
+}
+
+function toggleRecipe(id, e) {
+  if (e) e.stopPropagation();
+  const r = recipes.find(r => r.id === id);
+  if (r) r.selected = !r.selected;
+  window.fbSaveRecipes && fbSaveRecipes();
+  renderAll();
+  toast(r.selected ? `✅ ${r.name} נבחר` : `☐ ${r.name} בוטל`);
+}
+
+function updateQty(id, val) {
+  const item = inventory.find(i => i.id === id);
+  if (item) { item.qty = parseFloat(val) || 0; window.fbSaveInventory && fbSaveInventory(); renderAll(); }
+}
+
+function updateName(id, val) {
+  const item = inventory.find(i => i.id === id);
+  if (item && val.trim()) { item.name = val.trim(); window.fbSaveInventory && fbSaveInventory(); renderAll(); toast('✏️ שם עודכן ל: ' + val.trim()); }
+}
+
+function updateMin(id, val) {
+  const item = inventory.find(i => i.id === id);
+  if (item) { item.min = parseFloat(val) || 0; window.fbSaveInventory && fbSaveInventory(); renderAll(); }
+}
+
+function updateUnit(id, val) {
+  const item = inventory.find(i => i.id === id);
+  if (item) { item.unit = val; window.fbSaveInventory && fbSaveInventory(); renderAll(); }
+}
+
+function deleteItem(id) {
+  inventory = inventory.filter(i => i.id !== id);
+  window.fbSaveInventory && fbSaveInventory();
+  renderAll();
+  toast('🗑 פריט הוסר מהמלאי');
+}
+
+function deleteRecipe(id) {
+  if (!confirm('למחוק את המתכון?')) return;
+  recipes = recipes.filter(r => r.id !== id);
+  window.fbSaveRecipes && fbSaveRecipes();
+  renderAll();
+  toast('🗑 מתכון נמחק');
+}
+
+// ============================================================
+//  ADD INVENTORY ITEM
+// ============================================================
+function openAddItemModal() {
+  document.getElementById('iName').value = '';
+  document.getElementById('iQty').value = '0';
+  document.getElementById('iMin').value = '1';
+  openModal('itemModal');
+}
+
+function saveItem() {
+  const name = document.getElementById('iName').value.trim();
+  if (!name) { toast('❌ נא להזין שם מוצר'); return; }
+  inventory.push({
+    id: nextId++,
+    name,
+    category: document.getElementById('iCategory').value,
+    qty: parseFloat(document.getElementById('iQty').value) || 0,
+    unit: document.getElementById('iUnit').value,
+    min: parseFloat(document.getElementById('iMin').value) || 1,
+  });
+  closeModal('itemModal');
+  window.fbSaveInventory && fbSaveInventory();
+  renderAll();
+  toast('✅ ' + name + ' נוסף למלאי');
+}
+
+// ============================================================
+//  ADD/EDIT RECIPE
+// ============================================================
+function openAddRecipeModal() {
+  document.getElementById('rEditIndex').value = '-1';
+  document.getElementById('recipeModalTitle').textContent = 'הוסף מתכון חדש';
+  document.getElementById('rName').value = '';
+  document.getElementById('rInstructions').value = '';
+  document.getElementById('rServingsLabel').textContent = peopleCount;
+  document.getElementById('ingEditor').innerHTML = '';
+  addIngRow(); addIngRow(); addIngRow();
+  openModal('recipeModal');
+}
+
+function editRecipe(id) {
+  const r = recipes.find(r => r.id === id);
+  if (!r) return;
+  document.getElementById('rEditIndex').value = id;
+  document.getElementById('recipeModalTitle').textContent = 'ערוך מתכון: ' + r.name;
+  document.getElementById('rName').value = r.name;
+  document.getElementById('rCategory').value = r.category;
+  document.getElementById('rInstructions').value = r.instructions;
+  document.getElementById('rServingsLabel').textContent = BASE_PEOPLE;
+  const editor = document.getElementById('ingEditor');
+  editor.innerHTML = '';
+  r.ingredients.forEach(ing => addIngRow(ing.itemName, ing.qty, ing.unit));
+  openModal('recipeModal');
+}
+
+function addIngRow(name='', qty='', unit='ק״ג') {
+  const row = document.createElement('div');
+  row.className = 'ing-row';
+  row.innerHTML = `
+    <input class="form-control ing-name" placeholder="שם המצרך" value="${name}" />
+    <input class="form-control ing-qty" type="number" placeholder="כמות" value="${qty}" min="0" step="0.1" style="width:70px;" />
+    <select class="form-control ing-unit" style="width:90px;">
+      ${ALL_UNITS.map(u=>`<option ${u===unit?'selected':''}>${u}</option>`).join('')}
+    </select>
+    <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('ingEditor').appendChild(row);
+}
+
+function saveRecipe() {
+  const name = document.getElementById('rName').value.trim();
+  if (!name) { toast('❌ נא להזין שם מתכון'); return; }
+
+  const rows = document.querySelectorAll('#ingEditor .ing-row');
+  const ingredients = [];
+  rows.forEach(row => {
+    const n = row.querySelector('.ing-name').value.trim();
+    const q = parseFloat(row.querySelector('.ing-qty').value);
+    const u = row.querySelector('.ing-unit').value;
+    if (n && q > 0) ingredients.push({ itemName:n, qty:q, unit:u });
+  });
+
+  const editId = parseInt(document.getElementById('rEditIndex').value);
+
+  if (editId === -1) {
+    recipes.push({
+      id: nextId++,
+      name,
+      category: document.getElementById('rCategory').value,
+      instructions: document.getElementById('rInstructions').value,
+      ingredients,
+      selected: false,
+    });
+    toast('✅ ' + name + ' נוסף');
+  } else {
+    const r = recipes.find(r => r.id === editId);
+    if (r) {
+      r.name = name;
+      r.category = document.getElementById('rCategory').value;
+      r.instructions = document.getElementById('rInstructions').value;
+      r.ingredients = ingredients;
+    }
+    toast('✅ ' + name + ' עודכן');
+  }
+
+  closeModal('recipeModal');
+  window.fbSaveRecipes && fbSaveRecipes();
+  renderAll();
+}
+
+// ============================================================
+//  DESIGN SETTINGS
+// ============================================================
+
+const THEMES = [
+  { name:'זהב קלאסי',  accent:'#C9952A', accentLt:'#E8B84B', accentDk:'#8B6518', ink:'#1A1208', cream:'#FAF5E9', creamDk:'#F0E8D0', card:'#FFFDF5' },
+  { name:'כחול מלכותי', accent:'#2A6CC9', accentLt:'#4B8BE8', accentDk:'#184A8B', ink:'#080E1A', cream:'#EEF3FC', creamDk:'#D8E4F5', card:'#F5F8FF' },
+  { name:'ירוק יער',    accent:'#2A7A3B', accentLt:'#3FAF55', accentDk:'#1A5228', ink:'#081208', cream:'#EEF8F0', creamDk:'#D5EDD9', card:'#F5FDF6' },
+  { name:'בורדו עמוק',  accent:'#8B1A3A', accentLt:'#C02855', accentDk:'#5C0F25', ink:'#1A0808', cream:'#FDF0F3', creamDk:'#F5D5DC', card:'#FFF5F7' },
+  { name:'כסוף מודרני', accent:'#555E6B', accentLt:'#7D8898', accentDk:'#2E3540', ink:'#1A1E24', cream:'#F2F4F7', creamDk:'#E0E4EA', card:'#F8F9FB' },
+  { name:'כתום שמש',    accent:'#C96A1A', accentLt:'#E8921A', accentDk:'#8B4210', ink:'#1A0E08', cream:'#FDF4EC', creamDk:'#F5E2CC', card:'#FFFAF5' },
+  { name:'סגול מלכותי', accent:'#6A2AC9', accentLt:'#9A5AE8', accentDk:'#41178B', ink:'#0E081A', cream:'#F4F0FD', creamDk:'#E2D5F5', card:'#FAF5FF' },
+  { name:'שחור לילה',   accent:'#C9952A', accentLt:'#E8B84B', accentDk:'#8B6518', ink:'#0A0A0A', cream:'#1A1A1A', creamDk:'#242424', card:'#1E1E1E' },
+];
+
+const FONT_HEADS = [
+  { name:'Frank Ruhl', val:"'Frank Ruhl Libre', serif" },
+  { name:'David',      val:"'David Libre', serif" },
+  { name:'Secular',    val:"'Secular One', sans-serif" },
+  { name:'Rubik',      val:"'Rubik', sans-serif" },
+];
+const FONT_BODIES = [
+  { name:'Heebo',    val:"'Heebo', sans-serif" },
+  { name:'Rubik',    val:"'Rubik', sans-serif" },
+  { name:'Assistant',val:"'Assistant', sans-serif" },
+  { name:'Varela',   val:"'Varela Round', sans-serif" },
+];
+const ANIMS = [
+  { name:'חלק',   val:'cubic-bezier(0.4,0,0.2,1)' },
+  { name:'קפיצי', val:'cubic-bezier(0.34,1.56,0.64,1)' },
+  { name:'ליניארי',val:'linear' },
+  { name:'ללא',   val:'linear' },
+];
+const PAGE_ANIMS = [
+  { name:'גלישה',    cls:'anim-slide' },
+  { name:'דהייה',    cls:'anim-fade' },
+  { name:'זום',      cls:'anim-zoom' },
+  { name:'ללא',      cls:'anim-none' },
+];
+const DENSITIES = [
+  { name:'רווח',   pad:'18px' },
+  { name:'רגיל',   pad:'14px' },
+  { name:'צפוף',   pad:'8px' },
+];
+const ICONS_SETS = [
+  { name:'אמוג׳י',  dashboard:'📊', recipes:'🍽️', inventory:'📦', shopping:'🛒', design:'🎨' },
+  { name:'פשוט',    dashboard:'◈', recipes:'◉', inventory:'◫', shopping:'◳', design:'◐' },
+  { name:'ללא',     dashboard:'', recipes:'', inventory:'', shopping:'', design:'' },
+];
+const SHADOW_LEVELS = [
+  'none',
+  '0 2px 8px rgba(0,0,0,0.08)',
+  '0 4px 24px rgba(26,18,8,0.12)',
+  '0 8px 40px rgba(26,18,8,0.22)',
+];
+const SHADOW_LABELS = ['ללא','קל','רגיל','חזק'];
+
+// Current design state
+let design = {
+  themeIdx: 0,
+  fontHeadIdx: 0,
+  fontBodyIdx: 0,
+  fontSize: 15,
+  radius: 12,
+  transSpeed: 250,
+  animIdx: 0,
+  pageAnimIdx: 1,
+  cols: 3,
+  gap: 16,
+  densityIdx: 1,
+  shadowIdx: 2,
+  borderOpacity: 25,
+  iconSetIdx: 0,
+  customAccent: null,
+  customBg: null,
+  customHeader: null,
+  customText: null,
+};
+
+function loadDesign() {
+  const saved = localStorage.getItem('chabadDesign');
+  if (saved) try { design = { ...design, ...JSON.parse(saved) }; } catch(e) {}
+}
+
+function saveDesign() {
+  localStorage.setItem('chabadDesign', JSON.stringify(design));
+}
+
+function applyDesign() {
+  const root = document.documentElement;
+  const t = THEMES[design.themeIdx];
+
+  // Colors — custom overrides theme
+  root.style.setProperty('--gold',    design.customAccent || t.accent);
+  root.style.setProperty('--gold-lt', design.customAccent ? lighten(design.customAccent, 20) : t.accentLt);
+  root.style.setProperty('--gold-dk', design.customAccent ? darken(design.customAccent, 20)  : t.accentDk);
+  root.style.setProperty('--ink',     design.customHeader || t.ink);
+  root.style.setProperty('--cream',   design.customBg     || t.cream);
+  root.style.setProperty('--cream-dk',design.customBg     ? darken(design.customBg, 5)  : t.creamDk);
+  root.style.setProperty('--card',    design.customBg     ? lighten(design.customBg, 2) : t.card);
+
+  if (design.customText) {
+    document.body.style.color = design.customText;
+  } else {
+    document.body.style.color = '';
+    root.style.setProperty('--ink', design.customHeader || t.ink);
+  }
+
+  // Border
+  const bOpacity = design.borderOpacity / 100;
+  const acc = design.customAccent || t.accent;
+  const rgb = hexToRgb(acc);
+  root.style.setProperty('--border', `rgba(${rgb.r},${rgb.g},${rgb.b},${bOpacity})`);
+
+  // Shadow
+  const sh = SHADOW_LEVELS[design.shadowIdx];
+  root.style.setProperty('--shadow', sh);
+  root.style.setProperty('--shadow-lg', sh === 'none' ? 'none' : sh.replace(/[\d.]+px rgba/, m => (parseFloat(m)*2) + 'px rgba'));
+
+  // Fonts
+  root.style.setProperty('--font-h', FONT_HEADS[design.fontHeadIdx].val);
+  root.style.setProperty('--font-b', FONT_BODIES[design.fontBodyIdx].val);
+
+  // Font size
+  document.documentElement.style.fontSize = design.fontSize + 'px';
+
+  // Radius
+  root.style.setProperty('--radius', design.radius + 'px');
+
+  // Transition
+  const easing = design.animIdx === 3 ? 'linear' : ANIMS[design.animIdx].val;
+  const dur    = design.animIdx === 3 ? '0ms' : design.transSpeed + 'ms';
+  root.style.setProperty('--transition', `${dur} ${easing}`);
+
+  // Page animation
+  const pa = PAGE_ANIMS[design.pageAnimIdx];
+  applyPageAnimStyle(pa.cls, dur);
+
+  // Columns
+  const colMap = { 1:'1fr', 2:'1fr 1fr', 3:'1fr 1fr 1fr' };
+  document.querySelectorAll('.three-col').forEach(el => {
+    el.style.gridTemplateColumns = colMap[design.cols] || '1fr 1fr 1fr';
+  });
+
+  // Gap
+  document.querySelectorAll('.three-col,.settings-grid,.stats-bar').forEach(el => {
+    el.style.gap = design.gap + 'px';
+  });
+
+  // Density (panel padding)
+  const pad = DENSITIES[design.densityIdx].pad;
+  document.querySelectorAll('.panel-body,.panel-scroll,.settings-card-body,.modal-body').forEach(el => {
+    el.style.padding = pad;
+  });
+
+  // Icons in nav
+  updateNavIcons();
+
+  saveDesign();
+  syncDesignInputs();
+}
+
+function applyPageAnimStyle(cls, dur) {
+  let style = document.getElementById('pageAnimStyle');
+  if (!style) { style = document.createElement('style'); style.id = 'pageAnimStyle'; document.head.appendChild(style); }
+  const animations = {
+    'anim-slide': `@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }`,
+    'anim-fade':  `@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }`,
+    'anim-zoom':  `@keyframes fadeIn { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }`,
+    'anim-none':  `@keyframes fadeIn { from { opacity:1; } to { opacity:1; } }`,
+  };
+  style.textContent = `.page { animation: fadeIn ${dur} ease; } ${animations[cls] || animations['anim-fade']}`;
+}
+
+function updateNavIcons() {
+  const s = ICONS_SETS[design.iconSetIdx];
+  const tabs = document.querySelectorAll('.tab-btn');
+  const labels = [
+    s.dashboard + (s.dashboard ? ' ' : '') + 'לוח בקרה',
+    s.recipes   + (s.recipes   ? ' ' : '') + 'מתכונים',
+    s.inventory + (s.inventory ? ' ' : '') + 'מלאי',
+    s.shopping  + (s.shopping  ? ' ' : '') + 'קניות',
+    s.design    + (s.design    ? ' ' : '') + 'עיצוב',
+  ];
+  tabs.forEach((t, i) => { if (labels[i] !== undefined) t.textContent = labels[i].trim(); });
+}
+
+// Helpers
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return { r, g, b };
+}
+function lighten(hex, pct) {
+  let {r,g,b} = hexToRgb(hex);
+  r = Math.min(255, r + Math.round(255*pct/100));
+  g = Math.min(255, g + Math.round(255*pct/100));
+  b = Math.min(255, b + Math.round(255*pct/100));
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function darken(hex, pct) {
+  let {r,g,b} = hexToRgb(hex);
+  r = Math.max(0, r - Math.round(255*pct/100));
+  g = Math.max(0, g - Math.round(255*pct/100));
+  b = Math.max(0, b - Math.round(255*pct/100));
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+// Individual appliers (called by inputs)
+function applyCustomColor(type, val) {
+  if (type==='accent') { design.customAccent = val; document.getElementById('clrAccentVal').textContent = val; }
+  if (type==='bg')     { design.customBg     = val; document.getElementById('clrBgVal').textContent     = val; }
+  if (type==='header') { design.customHeader = val; document.getElementById('clrHeaderVal').textContent = val; }
+  if (type==='text')   { design.customText   = val; document.getElementById('clrTextVal').textContent   = val; }
+  applyDesign();
+}
+function applyFontSize(v)   { design.fontSize    = +v; document.getElementById('fontSizeVal').textContent = v+'px'; applyDesign(); }
+function applyRadius(v)     { design.radius       = +v; document.getElementById('radiusVal').textContent   = v+'px'; applyDesign(); }
+function applyTransition(v) { design.transSpeed   = +v; document.getElementById('transVal').textContent    = v+'ms'; applyDesign(); }
+function applyGap(v)        { design.gap          = +v; document.getElementById('gapVal').textContent      = v+'px'; applyDesign(); }
+function applyShadow(v)     { design.shadowIdx    = +v; document.getElementById('shadowVal').textContent   = SHADOW_LABELS[+v]; applyDesign(); }
+function applyBorder(v)     { design.borderOpacity= +v; document.getElementById('borderVal').textContent   = v+'%'; applyDesign(); }
+
+function selectTheme(idx) {
+  design.themeIdx = idx;
+  design.customAccent = design.customBg = design.customHeader = design.customText = null;
+  applyDesign();
+  renderDesignPage();
+}
+function selectFontHead(idx)   { design.fontHeadIdx = idx; applyDesign(); renderDesignPage(); }
+function selectFontBody(idx)   { design.fontBodyIdx = idx; applyDesign(); renderDesignPage(); }
+function selectAnim(idx)       { design.animIdx      = idx; applyDesign(); renderDesignPage(); }
+function selectPageAnim(idx)   { design.pageAnimIdx  = idx; applyDesign(); renderDesignPage(); }
+function selectCols(n)         { design.cols         = n;   applyDesign(); renderDesignPage(); }
+function selectDensity(idx)    { design.densityIdx   = idx; applyDesign(); renderDesignPage(); }
+function selectIconSet(idx)    { design.iconSetIdx   = idx; applyDesign(); renderDesignPage(); }
+
+function resetDesign() {
+  if (!confirm('לאפס את כל הגדרות העיצוב?')) return;
+  localStorage.removeItem('chabadDesign');
+  design = { themeIdx:0, fontHeadIdx:0, fontBodyIdx:0, fontSize:15, radius:12, transSpeed:250,
+    animIdx:0, pageAnimIdx:1, cols:3, gap:16, densityIdx:1, shadowIdx:2, borderOpacity:25,
+    iconSetIdx:0, customAccent:null, customBg:null, customHeader:null, customText:null };
+  applyDesign();
+  renderDesignPage();
+  toast('↺ עיצוב אופס לברירת מחדל');
+}
+
+function syncDesignInputs() {
+  const t = THEMES[design.themeIdx];
+  const setC = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  setC('clrAccent', design.customAccent || t.accent);
+  setC('clrBg',     design.customBg     || t.cream);
+  setC('clrHeader', design.customHeader || t.ink);
+  setC('clrText',   design.customText   || '#1A1208');
+  document.getElementById('clrAccentVal') && (document.getElementById('clrAccentVal').textContent = design.customAccent || t.accent);
+  document.getElementById('clrBgVal')     && (document.getElementById('clrBgVal').textContent     = design.customBg     || t.cream);
+  document.getElementById('clrHeaderVal') && (document.getElementById('clrHeaderVal').textContent = design.customHeader || t.ink);
+  document.getElementById('clrTextVal')   && (document.getElementById('clrTextVal').textContent   = design.customText   || '#1A1208');
+  setC('fontSize',    design.fontSize);    document.getElementById('fontSizeVal') && (document.getElementById('fontSizeVal').textContent = design.fontSize+'px');
+  setC('borderRadius',design.radius);      document.getElementById('radiusVal')   && (document.getElementById('radiusVal').textContent   = design.radius+'px');
+  setC('transSpeed',  design.transSpeed);  document.getElementById('transVal')    && (document.getElementById('transVal').textContent    = design.transSpeed+'ms');
+  setC('gapSize',     design.gap);         document.getElementById('gapVal')      && (document.getElementById('gapVal').textContent      = design.gap+'px');
+  setC('shadowStr',   design.shadowIdx);   document.getElementById('shadowVal')   && (document.getElementById('shadowVal').textContent   = SHADOW_LABELS[design.shadowIdx]);
+  setC('borderStr',   design.borderOpacity);document.getElementById('borderVal')  && (document.getElementById('borderVal').textContent   = design.borderOpacity+'%');
+}
+
+function renderDesignPage() {
+  // Theme swatches
+  const sw = document.getElementById('themeSwatches');
+  if (sw) {
+    sw.innerHTML = THEMES.map((t,i) => `
+      <div class="swatch ${i===design.themeIdx?'active':''}"
+        style="background:${t.accent};box-shadow:inset 0 0 0 3px ${t.ink}20"
+        onclick="selectTheme(${i})" title="${t.name}"></div>
+    `).join('');
+    const lbl = document.getElementById('themeNameLabel');
+    if (lbl) lbl.textContent = THEMES[design.themeIdx].name;
+  }
+
+  // Font heads
+  const fh = document.getElementById('fontHeadOptions');
+  if (fh) fh.innerHTML = FONT_HEADS.map((f,i) => `
+    <div class="font-card ${i===design.fontHeadIdx?'active':''}" style="font-family:${f.val}" onclick="selectFontHead(${i})">${f.name}</div>
+  `).join('');
+
+  // Font bodies
+  const fb = document.getElementById('fontBodyOptions');
+  if (fb) fb.innerHTML = FONT_BODIES.map((f,i) => `
+    <div class="font-card ${i===design.fontBodyIdx?'active':''}" style="font-family:${f.val}" onclick="selectFontBody(${i})">${f.name}</div>
+  `).join('');
+
+  // Animations
+  const an = document.getElementById('animOptions');
+  if (an) an.innerHTML = ANIMS.map((a,i) => `
+    <div class="anim-btn ${i===design.animIdx?'active':''}" onclick="selectAnim(${i})">${a.name}</div>
+  `).join('');
+
+  const pa = document.getElementById('pageAnimOptions');
+  if (pa) pa.innerHTML = PAGE_ANIMS.map((a,i) => `
+    <div class="anim-btn ${i===design.pageAnimIdx?'active':''}" onclick="selectPageAnim(${i})">${a.name}</div>
+  `).join('');
+
+  // Columns
+  const co = document.getElementById('colOptions');
+  if (co) co.innerHTML = [1,2,3].map(n => `
+    <div class="col-btn ${n===design.cols?'active':''}" onclick="selectCols(${n})">
+      ${'▌'.repeat(n)} ${n} עמודות
+    </div>
+  `).join('');
+
+  // Density
+  const de = document.getElementById('densityOptions');
+  if (de) de.innerHTML = DENSITIES.map((d,i) => `
+    <div class="anim-btn ${i===design.densityIdx?'active':''}" onclick="selectDensity(${i})">${d.name}</div>
+  `).join('');
+
+  // Icons
+  const ic = document.getElementById('iconOptions');
+  if (ic) ic.innerHTML = ICONS_SETS.map((s,i) => `
+    <div class="anim-btn ${i===design.iconSetIdx?'active':''}" onclick="selectIconSet(${i})">${s.name}</div>
+  `).join('');
+
+  syncDesignInputs();
+}
+
+// ============================================================
+//  RENDER ALL
+// ============================================================
+function renderAll() {
+  renderStats();
+  renderRecipesPanel();
+  renderInventoryPanel();
+  renderShoppingPanel();
+  // Full pages (only re-render if visible)
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-recipes') renderFullRecipes();
+  if (activePage && activePage.id === 'page-inventory') renderFullInventory();
+  if (activePage && activePage.id === 'page-shopping') renderFullShopping();
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+loadDesign();
+applyDesign();
+renderAll();
+</script>
+</body>
+</html>
